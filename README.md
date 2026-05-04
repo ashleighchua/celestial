@@ -1,3 +1,9 @@
+# Celestial Astrology App
+
+A multi-system astrology web app built with Next.js. Enter your birth details and get readings across Western astrology, Chinese astrology, Bazi, Zi Wei Dou Shu, Human Design, Numerology, Mayan calendar, MBTI, and more — with AI-powered interpretations via Gemini.
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
