@@ -1,5 +1,7 @@
 # Celestial Astrology App
 
+**Live:** https://astrology-app-hazel.vercel.app
+
 A multi-system astrology web app built with Next.js. Enter your birth details and get readings across Western astrology, Chinese astrology, Bazi, Zi Wei Dou Shu, Human Design, Numerology, Mayan calendar, MBTI, and more — with AI-powered interpretations via Gemini.
 
 ---
