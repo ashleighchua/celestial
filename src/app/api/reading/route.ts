@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { buildPrompt } from '@/lib/ai/readings';
 
-const client = new Anthropic(); // uses ANTHROPIC_API_KEY env var
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,20 +18,9 @@ export async function POST(request: NextRequest) {
 
     const prompt = buildPrompt(module, data, userName);
 
-    const message = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1024,
-      messages: [
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-    });
-
-    // Extract text from the response
-    const textBlock = message.content.find((block) => block.type === 'text');
-    const reading = textBlock ? textBlock.text : 'Unable to generate reading at this time.';
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const result = await model.generateContent(prompt);
+    const reading = result.response.text();
 
     return NextResponse.json({
       reading,
@@ -43,15 +32,14 @@ export async function POST(request: NextRequest) {
     const errorMessage =
       error instanceof Error ? error.message : 'An unexpected error occurred';
 
-    // Check for specific API errors
-    if (errorMessage.includes('api_key') || errorMessage.includes('authentication')) {
+    if (errorMessage.includes('API_KEY') || errorMessage.includes('authentication')) {
       return NextResponse.json(
         { error: 'AI service is not configured. Please set up your API key.' },
         { status: 503 }
       );
     }
 
-    if (errorMessage.includes('rate_limit') || errorMessage.includes('overloaded')) {
+    if (errorMessage.includes('quota') || errorMessage.includes('rate')) {
       return NextResponse.json(
         { error: 'AI service is temporarily busy. Please try again in a moment.' },
         { status: 429 }
